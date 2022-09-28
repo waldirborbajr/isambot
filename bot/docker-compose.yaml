@@ -1,0 +1,96 @@
+services:
+
+  isambot:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: ${PWD}/docker/Dockerfile
+    image: waldiborbajr/isambot:dev
+    container_name: isambot
+    hostname: isambot
+    cpus: 1.0
+    mem_limit: 1024m
+    memswap_limit: 1536m
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    depends_on:
+      - redis_isambot
+    network_mode: "host"
+    # networks:
+    #   - infra_network
+    # ports:
+    #   - 9090:9090
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    security_opt:
+      - no-new-privileges:true
+
+  redis_isambot:
+    stdin_open: true
+    tty: true
+    image: "redis:alpine"
+    container_name: redis_isambot
+    hostname: redis_isambot
+    network_mode: "host"
+    # command: redis-server --requirepass sEcrEt
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    stop_grace_period: "3s"
+    security_opt:
+      - no-new-privileges
+    volumes:
+      # - ${PWD}/infra/redis:/data:rw
+      - infra_data:/data:rw
+    # networks:
+    #   - infra_network
+    # ports:
+    #   - 6379:6379
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    security_opt:
+      - no-new-privileges:true
+
+  nginx_isambot:
+    stdin_open: true
+    tty: true
+    image: "nginx:alpine"
+    # build:
+    #   context: .
+    #   dockerfile: ./nginx/Dockerfile
+    command: [nginx-debug, "-g", "daemon off;"]
+    container_name: nginx_isambot
+    hostname: nginx_isambot
+    network_mode: "host"
+    restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+    security_opt:
+      - no-new-privileges
+    volumes:
+      - ${PWD}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # - ./nginx/loadbalancer/include:/etc/nginx/include:ro
+      # - ./nginx/loadbalancer/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - isambot
+    # networks:
+    #   - infra_network
+    # ports:
+    #   - "80:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+# networks:
+#   infra_network:
+#     driver: bridge
+
+volumes:
+  infra_data:
+    driver: local
+  infra_logs:
+    driver: local
