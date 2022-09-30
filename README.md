@@ -4,6 +4,8 @@
   <img height="120" heigth="120" src="./assets/isam.png">
 </p>
 
+### How it works
+
 <p align="center">
   <img height="390" src="./assets/workflow.png">
 </p>
