@@ -6,8 +6,8 @@
 
 ### How it works
 
-<p align="center">
-  <img height="390" src="./assets/workflow.png">
+<p>
+  <img height="300" src="./assets/workflow.png">
 </p>
 
 ## How to run locally
