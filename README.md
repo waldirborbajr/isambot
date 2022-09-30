@@ -1,9 +1,7 @@
 ## iSamBot
 
-<p align="center">
-  <img height="120" src="./assets/gopher.png">
-  <img height="80" src="./assets/heart.png">
-  <img height="120" src="./assets/telegram.png">
+<p>
+  <img height="120" heigth="120" src="./assets/isam.png">
 </p>
 
 <p align="center">
